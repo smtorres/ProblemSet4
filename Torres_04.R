@@ -259,7 +259,6 @@ dev.print(device=pdf, "PositionsPlots.pdf")
 setwd(main)
 Win <- scan(file=file, skip=9140, nlines=169, what=" ", sep=",")
 Win <- matrix(Win, nrow=169, byrow=T)
-Win <- dropfunction(winners)
 Win<-Exp.List(Win)
 Win<-data.frame(apply(Win, 2, FUN=MultiVals))
 Win<-Win[,c(1,2,5)]
@@ -276,3 +275,35 @@ barplot(WinDem,beside=FALSE,names=Win$Time, legend.text=c("Blue", "", "Red"),
         col=c("blue", "white", "red"))
 dev.print(device=pdf, "Winners.pdf")
 
+####POLARIZATION
+setwd(main)
+Polarization <- scan(file=file, skip=9321, nlines=169, what=" ", sep=",")
+Polarization <- matrix(Polarization, nrow=169, byrow=TRUE)
+Polarization<-Exp.List(Polarization)
+Polarization<-data.frame(apply(Polarization, 2, FUN=MultiVals))
+Polarization<-Polarization[,c(1,2,4,6)]
+names(Polarization)<-c("Time", "Total", "Voters", "Activists")
+setwd("/Users/michelletorres/Dropbox/SEMESTER2/R-Programming/Problem Set 4/ProblemSet4/4JobTalk3-10_05_2010-19_42/Plots/PolarizationPlot")
+write.csv(Polarization, file="Polarization.csv")
+
+library(scatterplot3d)
+attach(Polarization)
+scatterplot3d(Total,Voters,Activists, main="Polarization", highlight.3d=TRUE, 
+              type="p",
+              xlab="Candidates")
+dev.print(device=pdf, "PolarizationPlot1.pdf")
+plot(density(as.numeric(Total)), xlim=c(-2,10), ylim=c(0,0.45), 
+     main="Density Polarization", xlab="Euclidian Distance between parties")
+polygon(density(as.numeric(Total)), col="pink", border="pink")
+par(new=TRUE)
+plot(density(as.numeric(Voters)),xlim=c(-2,10), ylim=c(0,0.45), axes=FALSE,
+     ylab="", xlab="", main="")
+polygon(density(as.numeric(Voters)), col="lightgreen", border="lightgreen")
+par(new=TRUE)
+plot(density(as.numeric(Activists)),xlim=c(-2,10), ylim=c(0,0.45), axes=FALSE,
+     ylab="", xlab="", main="")
+polygon(density(as.numeric(Activists)), col="paleturquoise", border="paleturquoise")
+legend(-1, .45, legend=c("Candidates", "Voters", "Activists"), pch=c(15,15,15),
+       col=c("pink", "lightgreen", "paleturquoise"))
+detach(Polarization)
+dev.print(device=pdf, "PolarizationPlot2.pdf")
