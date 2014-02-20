@@ -2,6 +2,7 @@
 ###PROBLEM SET 4
 ##Creating the directory
 #Get the name of the file
+rm(list=ls(all.names=TRUE))
 setwd("/Users/michelletorres/Dropbox/SEMESTER2/R-Programming/Problem Set 4/ProblemSet4")
 DirNetLogo<- function (file="NetLogo.csv"){
   file.name<-scan(file, what="", nlines=1, sep=".", skip=1)
@@ -53,12 +54,15 @@ turtles.data <- scan(file="NetLogo.csv", skip=13, nlines=4786, what=" ", sep=","
 turtles.data<-matrix(turtles.data, nrow=4786, byrow=TRUE)
 turtles.data<-turtles.data[,1:38]
 colnames(turtles.data)<-turtles.names
+
 #Remove brackets and curly brackets
 turtles.data<-data.frame(turtles.data)
 for (i in 1:ncol(turtles.data)){
   turtles.data[,i]<-gsub("\\[|\\]", "", turtles.data[,i])
   turtles.data[,i]<-gsub("\\{|\\}", "", turtles.data[,i])
 }
+
+#Subsetting
 SubSet<- function(x){
   datalist<-list()
   var.names<- c("Districts", "Voters", "Activists", "Parties", "Candidates")
@@ -76,22 +80,61 @@ SubSet<- function(x){
   return(datalist)
 }
 datalist<-SubSet(turtles.data)
+
 Exp.List<-function(x){
-  #Record the name of the "grouping" variable
-  name<-x$Type[1]
-  #Delete the column of classification I created
-  x<-x[,1:38]
   #Delete all missing values
   x<-na.omit(x)
-  x<-apply(x, 2, function(x))
   #Unique values
   length.col<-apply(x, 2, FUN=function(x) length(unique(x)))
   unique.cols<-which(length.col==1)
   x<-x[,-c(unique.cols)]
-  #Export dataset
-  write.csv(x, paste(name, ".csv", sep=""))
+  x<-data.frame(x)
+  return(x)
 }
-Exp.List(x)
-apply(datalist, 3, E)
+
+data.set1<-Exp.List(datalist[[1]])
+data.set2<-Exp.List(datalist[[2]])
+data.set3<-Exp.List(datalist[[3]])
+data.set4<-Exp.List(datalist[[4]])
+data.set5<-Exp.List(datalist[[5]])
+
+datalist<-list(data.set1, data.set2, data.set3, data.set4, data.set5)
+
+###Function to split into vectors
+MultiVals<- function(x){
+  test.multi<-grep(" ",x)
+  if(length(test.multi)>0){
+  #Variables with multiple values
+  numcol<-length(x)
+      num.elem<-sapply(gregexpr(" ", x), length) +1
+      num.elem<-sum(num.elem)/length(num.elem)
+      vec<-unlist(strsplit(x, " "))
+ names.ext<- 1:length(num.elem)    
+  for (i in 1:length(num.elem)){
+        names.ext[i]<-as.character(paste(colnames(x), "_", i, sep=""))
+    }
+      mat<-data.frame(matrix(vec, ncol=num.elem, byrow=TRUE))
+      colnames(mat)<-names.ext
+      x<-mat} else{}
+  return(x)
+}
+data.set1<-data.frame(apply(datalist[[1]], 2, FUN=MultiVals))
+data.set2<-data.frame(apply(datalist[[2]], 2, FUN=MultiVals))
+data.set3<-data.frame(apply(datalist[[3]], 2, FUN=MultiVals))
+data.set4<-data.frame(apply(datalist[[4]], 2, FUN=MultiVals))
+data.set5<-data.frame(apply(datalist[[5]], 2, FUN=MultiVals))
+
+datalist<-list(data.set1, data.set2, data.set3, data.set4, data.set5)
+names(datalist)<-c("Districts", "Voters", "Activists", "Parties", "Candidates")
+
+#Export datasets
+setwd("/Users/michelletorres/Dropbox/SEMESTER2/R-Programming/Problem Set 4/ProblemSet4/4JobTalk3-10_05_2010-19_42/Turtles")
+
+write.csv(datalist[[1]], "Districts.csv")
+write.csv(datalist[[1]], "Voters.csv")
+write.csv(datalist[[1]], "Activists.csv")
+write.csv(datalist[[1]], "Parties.csv")
+write.csv(datalist[[1]], "Candidates.csv")
+
 
 
