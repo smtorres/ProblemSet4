@@ -3,7 +3,10 @@
 ##Creating the directory
 #Get the name of the file
 rm(list=ls(all.names=TRUE))
+options(stringsAsFactors=F)
+main<-"/Users/michelletorres/Dropbox/SEMESTER2/R-Programming/Problem Set 4/ProblemSet4"
 setwd("/Users/michelletorres/Dropbox/SEMESTER2/R-Programming/Problem Set 4/ProblemSet4")
+file<-"NetLogo.csv"
 DirNetLogo<- function (file="NetLogo.csv"){
   file.name<-scan(file, what="", nlines=1, sep=".", skip=1)
   file.name<-file.name[1]
@@ -25,6 +28,7 @@ DirNetLogo<- function (file="NetLogo.csv"){
 DirNetLogo("NetLogo.csv")
 
 ###Globals
+
 setwd("/Users/michelletorres/Dropbox/SEMESTER2/R-Programming/Problem Set 4/ProblemSet4")
 globals1<- scan(file="NetLogo.csv", what="", nlines=1, sep=",", skip=8)
 globals2<- scan(file="NetLogo.csv", what="", nlines=1, sep=",", skip=9)
@@ -136,5 +140,139 @@ write.csv(datalist[[1]], "Activists.csv")
 write.csv(datalist[[1]], "Parties.csv")
 write.csv(datalist[[1]], "Candidates.csv")
 
+#Plots
+####POSITIONS
+setwd("/Users/michelletorres/Dropbox/SEMESTER2/R-Programming/Problem Set 4/ProblemSet4/4JobTalk3-10_05_2010-19_42/Plots")
+dir.plots<-getwd()
+for (i in 1:4){
+  names<-c("PositionPlot", "WinnersPlot", "PolarizationPlot", "IncumbentPercentagePlot")
+  dir.create(names[i])
+}
+####Dimensions
+#Dimension 1
+setwd(main)
+Dim.1 <- scan(file=file, skip=8546, nlines=169, what=" ", sep=",")
+Dim.1.names<-scan(file=file, skip=8545, n=24, what=" ", sep=",")
+Dim.1 <- matrix(Dim.1, nrow=169, byrow=TRUE)
+Dim.1 <- Dim.1[,-c(25:84)]
+Dim.1<-data.frame(Dim.1)
+colnames(Dim.1)<-Dim.1.names
+index.y<-c(1,2,6,10,14,18,22)
+names.y<-matrix(scan(file=file, skip=8544, n=24, what=" ", sep=","), ncol=4, byrow=TRUE)
+names.y<-names.y[,1]
+for (i in 1: length(names.y)){
+  names.y[[i]]<-gsub("\\]|\\[|^\"|\"$", "", names.y[[i]])  
+}
+Dim.1<-Dim.1[,index.y]
+colnames(Dim.1)<- c("x", names.y)
+Dim.1<-data.frame(Dim.1)
+setwd("/Users/michelletorres/Dropbox/SEMESTER2/R-Programming/Problem Set 4/ProblemSet4/4JobTalk3-10_05_2010-19_42/Plots/PositionPlot")
+write.csv(Dim.1, file="Dim1.csv")
 
+#Dimension 2
+setwd(main)
+Dim.2 <- scan(file=file, skip=8730, nlines=169, what=" ", sep=",")
+Dim.2.names<-scan(file=file, skip=8545, n=24, what=" ", sep=",")
+Dim.2 <- matrix(Dim.2, nrow=169, byrow=TRUE)
+Dim.2 <- Dim.2[,-c(25:84)]
+Dim.2<-data.frame(Dim.2)
+colnames(Dim.2)<-Dim.2.names
+index.y<-c(1,2,6,10,14,18,22)
+names.y<-matrix(scan(file=file, skip=8544, n=24, what=" ", sep=","), ncol=4, byrow=TRUE)
+names.y<-names.y[,1]
+for (i in 1: length(names.y)){
+  names.y[[i]]<-gsub("\\]|\\[|^\"|\"$", "", names.y[[i]])  
+}
+Dim.2<-Dim.2[,index.y]
+colnames(Dim.2)<- c("x", names.y)
+Dim.2<-data.frame(Dim.2)
+setwd("/Users/michelletorres/Dropbox/SEMESTER2/R-Programming/Problem Set 4/ProblemSet4/4JobTalk3-10_05_2010-19_42/Plots/PositionPlot")
+write.csv(Dim.2, file="Dim2.csv")
+
+#Dimension 3
+setwd(main)
+Dim.3 <- scan(file=file, skip=8914, nlines=169, what=" ", sep=",")
+Dim.3.names<-scan(file=file, skip=8545, n=24, what=" ", sep=",")
+Dim.3 <- matrix(Dim.3, nrow=169, byrow=TRUE)
+Dim.3 <- Dim.3[,-c(25:84)]
+Dim.3<-data.frame(Dim.3)
+colnames(Dim.3)<-Dim.3.names
+index.y<-c(1,2,6,10,14,18,22)
+names.y<-matrix(scan(file=file, skip=8544, n=24, what=" ", sep=","), ncol=4, byrow=TRUE)
+names.y<-names.y[,1]
+for (i in 1: length(names.y)){
+  names.y[[i]]<-gsub("\\]|\\[|^\"|\"$", "", names.y[[i]])  
+}
+Dim.3<-Dim.3[,index.y]
+colnames(Dim.3)<- c("x", names.y)
+Dim.3<-data.frame(Dim.3)
+setwd("/Users/michelletorres/Dropbox/SEMESTER2/R-Programming/Problem Set 4/ProblemSet4/4JobTalk3-10_05_2010-19_42/Plots/PositionPlot")
+write.csv(Dim.3, file="Dim3.csv")
+
+
+
+#Plot, dimension 1
+par(mfrow=c(3,3), mar=c(1.2,4,1.5,1.2))
+plot(Dim.1$x,Dim.1$Red, col="red", main="Incumbents (D1)", 
+ylim=c(-6, 6), xlab="Simulation", ylab="Mean Position", pch=18)
+points(Dim.1$x,Dim.1$Blue, col="blue", pch=18)
+legend(1,-2, legend= c("Blue", "Red"), pch=c(18,18), col=c("blue", "red"), cex=0.5)
+plot(Dim.1$x,Dim.1$RedActivists, col="red", main="Activists (D1)", 
+     ylim=c(-6, 6), xlab="Simulation", ylab="Mean Position", pch=18)
+points(Dim.1$x,Dim.1$BlueActivists, col="blue", pch=18)
+legend(50,-4, legend= c("Blue", "Red"), pch=c(18,18), col=c("blue", "red"), cex=0.4)
+plot(Dim.1$x,Dim.1$RedVoters, col="red", main="Voters (D1)", 
+     ylim=c(-6, 6), xlab="Simulation", ylab="Mean Position", pch=18)
+points(Dim.1$x,Dim.1$BlueVoters, col="blue", pch=18)
+legend(1,-2, legend= c("Blue", "Red"), pch=c(18,18), col=c("blue", "red"), cex=0.5)
+#Plot, dimension 2
+plot(Dim.2$x,Dim.2$Red, col="red", main="Incumbents (D2)", 
+     ylim=c(-10, 10), xlab="Simulation", ylab="Mean Position", pch=18)
+points(Dim.2$x,Dim.2$Blue, col="blue", pch=18)
+legend(1,-2, legend= c("Blue", "Red"), pch=c(18,18), col=c("blue", "red"), cex=0.5)
+plot(Dim.2$x,Dim.2$RedActivists, col="red", main="Activists (D2)", 
+     ylim=c(-12, 12), xlab="Simulation", ylab="Mean Position", pch=18)
+points(Dim.2$x,Dim.2$BlueActivists, col="blue", pch=18)
+legend(50,-4, legend= c("Blue", "Red"), pch=c(18,18), col=c("blue", "red"), cex=0.4)
+plot(Dim.2$x,Dim.2$RedVoters, col="red", main="Voters (D2)", 
+     ylim=c(-6, 6), xlab="Simulation", ylab="Mean Position", pch=18)
+points(Dim.2$x,Dim.2$BlueVoters, col="blue", pch=18)
+legend(1,-2, legend= c("Blue", "Red"), pch=c(18,18), col=c("blue", "red"), cex=0.5)
+#Plot, dimension 3
+plot(Dim.3$x,Dim.3$Red, col="red", main="Incumbents (D3)", 
+     ylim=c(-10, 10), xlab="Simulation", ylab="Mean Position", pch=18)
+points(Dim.3$x,Dim.3$Blue, col="blue", pch=18)
+legend(1,-2, legend= c("Blue", "Red"), pch=c(18,18), col=c("blue", "red"), cex=0.5)
+plot(Dim.3$x,Dim.3$RedActivists, col="red", main="Activists (D3)", 
+     ylim=c(-12, 12), xlab="Simulation", ylab="Mean Position", pch=18)
+points(Dim.3$x,Dim.3$BlueActivists, col="blue", pch=18)
+legend(50,-4, legend= c("Blue", "Red"), pch=c(18,18), col=c("blue", "red"), cex=0.4)
+plot(Dim.3$x,Dim.3$RedVoters, col="red", main="Voters (D3)", 
+     ylim=c(-6, 6), xlab="Simulation", ylab="Mean Position", pch=18)
+points(Dim.2$x,Dim.2$BlueVoters, col="blue", pch=18)
+legend(1,-2, legend= c("Blue", "Red"), pch=c(18,18), col=c("blue", "red"), cex=0.5)
+setwd("/Users/michelletorres/Dropbox/SEMESTER2/R-Programming/Problem Set 4/ProblemSet4/4JobTalk3-10_05_2010-19_42/Plots/PositionPlot")
+dev.print(device=pdf, "PositionsPlots.pdf")
+
+
+###WINNERS
+setwd(main)
+Win <- scan(file=file, skip=9140, nlines=169, what=" ", sep=",")
+Win <- matrix(Win, nrow=169, byrow=T)
+Win <- dropfunction(winners)
+Win<-Exp.List(Win)
+Win<-data.frame(apply(Win, 2, FUN=MultiVals))
+Win<-Win[,c(1,2,5)]
+names(Win)<-c("Time", "Blue", "Red")
+setwd("/Users/michelletorres/Dropbox/SEMESTER2/R-Programming/Problem Set 4/ProblemSet4/4JobTalk3-10_05_2010-19_42/Plots/WinnersPlot")
+write.csv(Win, file="Winners.csv")
+rest<-100-(as.numeric(Win$Blue)+as.numeric(Win$Red))
+WinDem<-rbind(Win$Blue, rest, Win$Red)
+
+#Plot Winners
+barplot(WinDem,beside=FALSE,names=Win$Time, legend.text=c("Blue", "", "Red"),
+        args.legend = list(x = "topright"),  ylim=c(0,100), 
+        main="Winners per party", ylab="Time period", xlab="%", 
+        col=c("blue", "white", "red"))
+dev.print(device=pdf, "Winners.pdf")
 
