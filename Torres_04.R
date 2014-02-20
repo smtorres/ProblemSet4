@@ -4,6 +4,7 @@
 #Get the name of the file
 rm(list=ls(all.names=TRUE))
 options(stringsAsFactors=F)
+FunNetLogo<-function(x){
 main<-"/Users/michelletorres/Dropbox/SEMESTER2/R-Programming/Problem Set 4/ProblemSet4"
 setwd("/Users/michelletorres/Dropbox/SEMESTER2/R-Programming/Problem Set 4/ProblemSet4")
 file<-"NetLogo.csv"
@@ -211,7 +212,7 @@ write.csv(Dim.3, file="Dim3.csv")
 
 
 
-#Plot, dimension 1
+#Plot, dimension 1 
 par(mfrow=c(3,3), mar=c(1.2,4,1.5,1.2))
 plot(Dim.1$x,Dim.1$Red, col="red", main="Incumbents (D1)", 
 ylim=c(-6, 6), xlab="Simulation", ylab="Mean Position", pch=18)
@@ -253,7 +254,12 @@ points(Dim.2$x,Dim.2$BlueVoters, col="blue", pch=18)
 legend(1,-2, legend= c("Blue", "Red"), pch=c(18,18), col=c("blue", "red"), cex=0.5)
 setwd("/Users/michelletorres/Dropbox/SEMESTER2/R-Programming/Problem Set 4/ProblemSet4/4JobTalk3-10_05_2010-19_42/Plots/PositionPlot")
 dev.print(device=pdf, "PositionsPlots.pdf")
-
+resetPar <- function() {
+  dev.new()
+  op <- par(no.readonly = TRUE)
+  dev.off()
+  op
+}
 
 ###WINNERS
 setwd(main)
@@ -269,6 +275,7 @@ rest<-100-(as.numeric(Win$Blue)+as.numeric(Win$Red))
 WinDem<-rbind(Win$Blue, rest, Win$Red)
 
 #Plot Winners
+par(mfrow=c(1,1), mar=c(1,1,1,1))
 barplot(WinDem,beside=FALSE,names=Win$Time, legend.text=c("Blue", "", "Red"),
         args.legend = list(x = "topright"),  ylim=c(0,100), 
         main="Winners per party", ylab="Time period", xlab="%", 
@@ -288,10 +295,12 @@ write.csv(Polarization, file="Polarization.csv")
 
 library(scatterplot3d)
 attach(Polarization)
+par(mfrow=c(1,1), mar=c(1,1,1,1))
 scatterplot3d(Total,Voters,Activists, main="Polarization", highlight.3d=TRUE, 
               type="p",
               xlab="Candidates")
 dev.print(device=pdf, "PolarizationPlot1.pdf")
+
 plot(density(as.numeric(Total)), xlim=c(-2,10), ylim=c(0,0.45), 
      main="Density Polarization", xlab="Euclidian Distance between parties")
 polygon(density(as.numeric(Total)), col="pink", border="pink")
@@ -307,3 +316,29 @@ legend(-1, .45, legend=c("Candidates", "Voters", "Activists"), pch=c(15,15,15),
        col=c("pink", "lightgreen", "paleturquoise"))
 detach(Polarization)
 dev.print(device=pdf, "PolarizationPlot2.pdf")
+
+####INCUMBENTS
+
+setwd(main)
+Incumbent<-scan(file=file, skip=9500, nlines=169, what=" ", sep=",")
+Incumbent <- matrix(Incumbent, nrow=169, byrow=T)
+Incumbent<-Exp.List(Incumbent)
+Incumbent<-data.frame(apply(Incumbent, 2, FUN=MultiVals))
+names(Incumbent)<-c("Time", "Percent")
+setwd("/Users/michelletorres/Dropbox/SEMESTER2/R-Programming/Problem Set 4/ProblemSet4/4JobTalk3-10_05_2010-19_42/Plots/IncumbentPercentagePlot")
+write.csv(Incumbent, file="IncumbentWins.csv")
+
+#Plot Incumbents
+par(mfrow=c(1,1), mar=c(1,1,1,1))
+dotchart(as.numeric(Incumbent$Percent),labels=NULL,cex=.5,
+         main="Percentage of Winning Incumbents", xlim=c(40,70),
+         xlab="Percentage", ylab= "Period of Time")
+abline(v=50, col="red")
+dev.print(device=pdf, "IncumbentWins.pdf")
+}
+
+
+###10
+setwd(main)
+x<-file
+FunNetLogo(x)
