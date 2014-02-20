@@ -342,3 +342,86 @@ dev.print(device=pdf, "IncumbentWins.pdf")
 setwd(main)
 x<-file
 FunNetLogo(x)
+
+
+####EXERCISES
+#Chapter 4
+
+#3
+Squares.Cubes<- function(x){
+  vec<-c(1:x)
+  squares<-vec^2
+  cubes<- vec^3
+  mat<-cbind(vec, squares, cubes)
+  colnames(mat)<- c("numbers", "square", "cube")
+  rownames(mat)<-rep(" ", x)
+  mat<-as.table(mat)
+  return(mat)
+}
+Squares.Cubes(7)
+
+
+#4
+Multip<-function(){
+  library(memisc)
+vec<-1:9
+vec2<-vec*2
+vec3<-vec*3
+vec4<-vec*4
+vec5<-vec*5
+vec6<-vec*6
+vec7<-vec*7
+vec8<-vec*8
+vec9<-vec*9
+mat<-cbind(vec, vec2, vec3, vec4, vec5, vec6, vec7, vec8, vec9)
+return(mat)
+}
+Multip()
+
+#Chapter 7
+##3
+pop<-data.frame(m=rnorm(100,160,20), f=rnorm(100,160,20))
+
+next.gen<-function(pop){
+  pop$m<-sample(pop$m)
+  pop$m<-apply(pop,1,mean)
+  pop$f<-pop$m
+  return(pop)
+}
+
+gens<-function(z){
+  x<-data.frame(m=rnorm(100,160,20), f=rnorm(100,160,20))
+  gen<-next.gen(x)
+  num<-rep(z, 100)
+  gen.new<-cbind(gen, num)
+  return(gen.new)
+}
+
+gen1<-gens(1)
+gen2<-gens(2)
+gen3<-gens(3)
+gen4<-gens(4)
+gen5<-gens(5)
+gen6<-gens(6)
+gen7<-gens(7)
+gen8<-gens(8)
+gen9<-gens(9)
+gen.tot<-rbind(gen1, gen2)
+gen.tot<-rbind(gen.tot, gen3)
+gen.tot<-rbind(gen.tot, gen4)
+gen.tot<-rbind(gen.tot, gen5)
+gen.tot<-rbind(gen.tot, gen6)
+gen.tot<-rbind(gen.tot, gen7)
+gen.tot<-rbind(gen.tot, gen8)
+gen.tot<-rbind(gen.tot, gen9)
+
+##Plot
+library(lattice)
+histogram(~ m | num, data=gen.tot, levels=c(9:1), main="Distribution of male height by generation",
+          xlab="Male population", as.table=TRUE, col="green" )
+
+#4
+library(spuRs)
+data(treeg)
+xyplot(height.ft ~ age, data=treeg, group=tree.ID, type="l", xlab="age (years)", ylab="height (feet)")
+
